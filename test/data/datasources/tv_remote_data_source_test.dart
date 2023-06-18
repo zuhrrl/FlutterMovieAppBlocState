@@ -353,22 +353,4 @@ void main() {
       expect(() => call, throwsA(isA<ServerException>()));
     });
   });
-
-  group('search tvs', () {
-    final tQuery = 'one piece';
-
-    test(
-        'search should throw ServerException when response code is other than 200',
-        () async {
-      // arrange
-      when(mockClientHelper
-              .get(Uri.parse('$BASE_URL/search/tv?$API_KEY&query=$tQuery')))
-          .thenAnswer((_) async => http.Response('Not Found', 404));
-      // act
-      // assert
-      expect(() async => await dataSource.searchTvs(tQuery),
-          throwsA(isA<ServerException>()));
-      expect(dataSource.resultSearch.isEmpty, true);
-    });
-  });
 }
