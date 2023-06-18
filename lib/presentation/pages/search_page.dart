@@ -33,11 +33,11 @@ class SearchPage extends StatelessWidget {
                         .add(OnQueryChanged(_searchType, query));
                   },
                   onSubmitted: (query) {
-                    debugPrint('onsubmit disini');
-
+                    _query = query;
                     context
                         .read<SearchPageBloc>()
                         .add(OnQueryChanged(_searchType, query));
+                    Logger().d('onsubmit disini $_query');
                   },
                   decoration: InputDecoration(
                     hintText: 'Search title',

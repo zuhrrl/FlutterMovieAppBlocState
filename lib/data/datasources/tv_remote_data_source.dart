@@ -20,7 +20,6 @@ abstract class TvRemoteDataSource {
 class TvRemoteDataSourceImpl implements TvRemoteDataSource {
   static const API_KEY = 'api_key=2174d146bb9c0eab47529b2e77d6b526';
   static const BASE_URL = 'https://api.themoviedb.org/3';
-  List<SearchResultModel> resultSearch = [];
 
   final ClientHelper client;
 
@@ -87,6 +86,8 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<List<SearchResultModel>> searchTvs(String query) async {
+    List<SearchResultModel> resultSearch = [];
+
     final response = await client
         .get(Uri.parse('$BASE_URL/search/tv?$API_KEY&query=$query'));
 
