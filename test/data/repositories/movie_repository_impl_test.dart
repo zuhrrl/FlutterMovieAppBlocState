@@ -5,12 +5,10 @@ import 'package:ditonton/data/datasources/watchlist_data_source.dart';
 import 'package:ditonton/data/models/genre_model.dart';
 import 'package:ditonton/data/models/movie_detail_model.dart';
 import 'package:ditonton/data/models/movie_model.dart';
-import 'package:ditonton/data/models/search_result_model.dart';
 import 'package:ditonton/data/repositories/movie_repository_impl.dart';
 import 'package:ditonton/common/exception.dart';
 import 'package:ditonton/common/failure.dart';
 import 'package:ditonton/domain/entities/movie.dart';
-import 'package:ditonton/domain/entities/search_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -67,46 +65,8 @@ void main() {
     voteCount: 13507,
   );
 
-  final tSearchResult = SearchResult(
-    isMovie: true,
-    adult: false,
-    backdropPath: '/muth4OYamXf41G2evdrLEg8d3om.jpg',
-    genreIds: [14, 28],
-    id: 557,
-    originalTitle: 'Spider-Man',
-    overview:
-        'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
-    popularity: 60.441,
-    posterPath: '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
-    releaseDate: '2002-05-01',
-    title: 'Spider-Man',
-    video: false,
-    voteAverage: 7.2,
-    voteCount: 13507,
-  );
-
-  final tSearchResultModel = SearchResultModel(
-    isMovie: true,
-    adult: false,
-    backdropPath: '/muth4OYamXf41G2evdrLEg8d3om.jpg',
-    genreIds: [14, 28],
-    id: 557,
-    originalTitle: 'Spider-Man',
-    overview:
-        'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
-    popularity: 60.441,
-    posterPath: '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
-    releaseDate: '2002-05-01',
-    title: 'Spider-Man',
-    video: false,
-    voteAverage: 7.2,
-    voteCount: 13507,
-  );
-
   final tMovieModelList = <MovieModel>[tMovieModel];
   final tMovieList = <Movie>[tMovie];
-  final tSearchResultList = <SearchResult>[tSearchResult];
-  final tSearchResultModelList = <SearchResultModel>[tSearchResultModel];
 
   group('Now Playing Movies', () {
     test(
@@ -314,6 +274,69 @@ void main() {
       /* workaround to test List in Right. Issue: https://github.com/spebbe/dartz/issues/80 */
       final resultList = result.getOrElse(() => []);
       expect(resultList, equals(tMovieList));
+    });
+
+    test(
+        'should return server failure when call to remote data source is unsuccessful',
+        () async {
+      // arrange
+      when(mockRemoteDataSource.getMovieRecommendations(tId))
+          .thenThrow(ServerException());
+      // act
+      final result = await repository.getMovieRecommendations(tId);
+      // assertbuild runner
+      verify(mockRemoteDataSource.getMovieRecommendations(tId));
+      expect(result, equals(Left(ServerFailure(''))));
+    });
+
+    test(
+        'should return connection failure when the device is not connected to the internet',
+        () async {
+      // arrange
+      when(mockRemoteDataSource.getMovieRecommendations(tId))
+          .thenThrow(SocketException('Failed to connect to the network'));
+      // act
+      final result = await repository.getMovieRecommendations(tId);
+      // assert
+      verify(mockRemoteDataSource.getMovieRecommendations(tId));
+      expect(result,
+          equals(Left(ConnectionFailure('Failed to connect to the network'))));
+    });
+  });
+
+  group('Get Search movies', () {
+    final tId = 1;
+
+    test('should return data (movie list) when the call is successful',
+        () async {
+      var query = 'test';
+
+      // arrange
+      when(mockRemoteDataSource.searchMovies(query))
+          .thenAnswer((_) async => []);
+      // act
+      final result = await repository.searchMovies(query);
+      // assert
+      verify(mockRemoteDataSource.searchMovies(query));
+      /* workaround to test List in Right. Issue: https://github.com/spebbe/dartz/issues/80 */
+      final resultList = result.getOrElse(() => []);
+      expect(resultList, []);
+    });
+
+    test('should not return data (movie list) when the call is failed',
+        () async {
+      var query = 'test';
+
+      // arrange
+      when(mockRemoteDataSource.searchMovies(query))
+          .thenThrow(SocketException('Failed to connect to the network'));
+      // act
+      final result = await repository.searchMovies(query);
+      // assert
+      verify(mockRemoteDataSource.searchMovies(query));
+      /* workaround to test List in Right. Issue: https://github.com/spebbe/dartz/issues/80 */
+      expect(result,
+          equals(Left(ConnectionFailure('Failed to connect to the network'))));
     });
 
     test(

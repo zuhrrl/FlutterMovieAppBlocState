@@ -1,13 +1,9 @@
-import 'dart:convert';
-
-import 'package:ditonton/common/state_enum.dart';
 import 'package:ditonton/common/utils.dart';
 import 'package:ditonton/presentation/bloc/watchlist_bloc.dart';
 import 'package:ditonton/presentation/widgets/watchlist_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class WatchListTvsMovies extends StatefulWidget {
   static const ROUTE_NAME = '/watchlist-movie';

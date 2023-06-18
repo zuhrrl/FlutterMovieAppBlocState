@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:ditonton/common/exception.dart';
 import 'package:ditonton/data/models/search_result_model.dart';
@@ -7,8 +6,6 @@ import 'package:ditonton/data/models/tv_detail_model.dart';
 import 'package:ditonton/data/models/tv_model.dart';
 import 'package:ditonton/data/models/tv_response.dart';
 import 'package:ditonton/utils/client_helper.dart';
-import 'package:flutter/services.dart';
-import 'package:http/io_client.dart';
 // import 'package:http/http.dart' as http;
 
 abstract class TvRemoteDataSource {
@@ -25,11 +22,12 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
   static const BASE_URL = 'https://api.themoviedb.org/3';
   List<SearchResultModel> resultSearch = [];
 
-  final ClientHelper _clientHelper = ClientHelper();
+  final ClientHelper client;
+
+  TvRemoteDataSourceImpl({required this.client});
 
   @override
   Future<List<TvModel>> getNowAiringTvs() async {
-    var client = await _clientHelper.getClient();
     final response =
         await client.get(Uri.parse('$BASE_URL/tv/airing_today?$API_KEY'));
 
@@ -42,8 +40,6 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<TvDetailResponse> getTvDetail(int id) async {
-    var client = await _clientHelper.getClient();
-
     final response = await client.get(Uri.parse('$BASE_URL/tv/$id?$API_KEY'));
 
     if (response.statusCode == 200) {
@@ -55,8 +51,6 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<List<TvModel>> getTvRecommendations(int id) async {
-    var client = await _clientHelper.getClient();
-
     final response = await client
         .get(Uri.parse('$BASE_URL/tv/$id/recommendations?$API_KEY'));
 
@@ -69,8 +63,6 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<List<TvModel>> getPopularTvs() async {
-    var client = await _clientHelper.getClient();
-
     final response =
         await client.get(Uri.parse('$BASE_URL/tv/popular?$API_KEY'));
 
@@ -83,8 +75,6 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<List<TvModel>> getTopRatedTvs() async {
-    var client = await _clientHelper.getClient();
-
     final response =
         await client.get(Uri.parse('$BASE_URL/tv/top_rated?$API_KEY'));
 
@@ -97,8 +87,6 @@ class TvRemoteDataSourceImpl implements TvRemoteDataSource {
 
   @override
   Future<List<SearchResultModel>> searchTvs(String query) async {
-    var client = await _clientHelper.getClient();
-
     final response = await client
         .get(Uri.parse('$BASE_URL/search/tv?$API_KEY&query=$query'));
 

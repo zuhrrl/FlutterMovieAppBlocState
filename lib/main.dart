@@ -1,6 +1,5 @@
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/utils.dart';
-import 'package:ditonton/domain/usecases/get_movie_recommendations.dart';
 import 'package:ditonton/firebase_options.dart';
 import 'package:ditonton/presentation/bloc/category_bloc.dart';
 import 'package:ditonton/presentation/bloc/movie_detail_bloc.dart';
@@ -13,6 +12,7 @@ import 'package:ditonton/presentation/bloc/save_watch_list_bloc.dart';
 import 'package:ditonton/presentation/bloc/search_page_bloc.dart';
 import 'package:ditonton/presentation/bloc/top_rated_movies_bloc.dart';
 import 'package:ditonton/presentation/bloc/top_rated_tvs_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton/presentation/bloc/watchlist_bloc.dart';
 import 'package:ditonton/presentation/pages/about_page.dart';
 import 'package:ditonton/presentation/pages/movie_detail_page.dart';
@@ -60,9 +60,6 @@ class MyApp extends StatelessWidget {
           create: (_) => di.locator<RecommendationsBloc>(),
         ),
         BlocProvider(
-          create: (_) => di.locator<SaveWatchListBloc>(),
-        ),
-        BlocProvider(
           create: (_) => di.locator<PopularMoviesBloc>(),
         ),
         BlocProvider(
@@ -82,6 +79,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => di.locator<WatchlistBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<TvDetailBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<SaveWatchListBloc>(),
         )
       ],
       child: MaterialApp(

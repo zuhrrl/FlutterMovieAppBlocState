@@ -3,16 +3,13 @@ import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/domain/entities/genre.dart';
 import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/domain/entities/movie_detail.dart';
-import 'package:ditonton/presentation/bloc/category_bloc.dart';
 import 'package:ditonton/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton/presentation/bloc/recommendations_bloc.dart';
 import 'package:ditonton/presentation/bloc/save_watch_list_bloc.dart';
-import 'package:ditonton/common/state_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class MovieDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/detail';
@@ -29,8 +26,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   void initState() {
     super.initState();
     context.read<MovieDetailBloc>().add(OnFetchDetailMovie(widget.id));
+    context.read<SaveWatchListBloc>().add(OnInitWatchlistTv(widget.id));
     context.read<RecommendationsBloc>().add(OnFetchRecommendation(widget.id));
-    context.read<SaveWatchListBloc>().add(OnInitWatchlist(widget.id));
   }
 
   @override
@@ -58,22 +55,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
             );
           }
+
+          if (state is MovieDetailError) {
+            return Center(
+              child: Text('Failed to load movie detail'),
+            );
+          }
           return Center(
             child: Text('Failed to load movie detail'),
           );
-          // if (provider.movieState == RequestState.Loading) {
-          // } else if (provider.movieState == RequestState.Loaded) {
-          //   final movie = provider.movie;
-          //   return SafeArea(
-          //     child: DetailContent(
-          //       movie,
-          //       provider.movieRecommendations,
-          //       provider.isAddedToWatchlist,
-          //     ),
-          //   );
-          // } else {
-          //   return Text(provider.message);
-          // }
         },
       ),
     );
@@ -216,13 +206,13 @@ class DetailContent extends StatelessWidget {
                                 RecommendationsState>(
                               builder: (context, state) {
                                 Logger().d('state $state');
-                                if (state is RecommendationsLoading) {
+                                if (state is RecommendationsMovieLoading) {
                                   return Center(
                                     child: CircularProgressIndicator(),
                                   );
                                 }
 
-                                if (state is RecommendationsError) {
+                                if (state is MovieRecommendationsError) {
                                   return Text(state.message);
                                 }
 
@@ -235,6 +225,7 @@ class DetailContent extends StatelessWidget {
                                         final movie =
                                             state.recommendations[index];
                                         return Padding(
+                                          key: Key('recommendations_widget'),
                                           padding: const EdgeInsets.all(4.0),
                                           child: InkWell(
                                             onTap: () {

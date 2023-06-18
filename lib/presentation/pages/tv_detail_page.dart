@@ -1,17 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/domain/entities/genre.dart';
-import 'package:ditonton/domain/entities/tv.dart';
 import 'package:ditonton/domain/entities/tv_detail.dart';
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton/presentation/bloc/recommendations_bloc.dart';
 import 'package:ditonton/presentation/bloc/save_watch_list_bloc.dart';
 import 'package:ditonton/presentation/bloc/tv_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 
 class TvDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/tv-detail';
@@ -29,10 +25,10 @@ class _TvDetailPageState extends State<TvDetailPage> {
     super.initState();
     Future.microtask(() {
       context.read<TvDetailBloc>().add(OnFetchDetailTv(widget.id));
+      context.read<SaveWatchListBloc>().add(OnInitWatchlistTv(widget.id));
       context
           .read<RecommendationsBloc>()
           .add(OnFetchTvRecommendation(widget.id));
-      context.read<SaveWatchListBloc>().add(OnInitWatchlistTv(widget.id));
     });
   }
 
@@ -217,6 +213,7 @@ class DetailContent extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         final tv = state.recommendations[index];
                                         return Padding(
+                                          key: Key('recommendations_widget'),
                                           padding: const EdgeInsets.all(4.0),
                                           child: InkWell(
                                             onTap: () {

@@ -11,6 +11,4 @@ class onCategoryChanged extends CategoryEvent {
   String category = 'movies';
 
   onCategoryChanged(this.category);
-  @override
-  List<Object> get props => [category];
 }

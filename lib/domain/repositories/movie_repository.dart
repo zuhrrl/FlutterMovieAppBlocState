@@ -3,7 +3,6 @@ import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/domain/entities/movie_detail.dart';
 import 'package:ditonton/common/failure.dart';
 import 'package:ditonton/domain/entities/search_result.dart';
-import 'package:ditonton/domain/entities/watchlist.dart';
 
 abstract class MovieRepository {
   Future<Either<Failure, List<Movie>>> getNowPlayingMovies();

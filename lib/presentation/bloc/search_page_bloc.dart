@@ -3,7 +3,6 @@ import 'package:ditonton/domain/entities/search_result.dart';
 import 'package:ditonton/domain/usecases/search_movies.dart';
 import 'package:ditonton/domain/usecases/search_tvs.dart';
 import 'package:equatable/equatable.dart';
-import 'package:http/http.dart';
 
 part 'search_page_event.dart';
 part 'search_page_state.dart';

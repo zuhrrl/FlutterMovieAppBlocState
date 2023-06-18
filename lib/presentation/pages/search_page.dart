@@ -2,7 +2,6 @@ import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/presentation/bloc/category_bloc.dart';
 import 'package:ditonton/presentation/bloc/search_page_bloc.dart';
 import 'package:ditonton/presentation/widgets/search_result_card.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
